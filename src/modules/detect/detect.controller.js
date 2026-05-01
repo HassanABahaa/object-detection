@@ -3,10 +3,17 @@ import { asyncHandler } from '../../utils/errorHandling.js';
 import { analyzeImageWithAI } from '../../services/ai.service.js';
 
 export const detectObjects = asyncHandler(async (req, res, next) => {
-    const { image } = req.body;
+    let { image } = req.body;
+
+    // If a file was uploaded, convert it to base64
+    if (req.file) {
+        const base64Image = req.file.buffer.toString('base64');
+        const mimetype = req.file.mimetype;
+        image = `data:${mimetype};base64,${base64Image}`;
+    }
 
     if (!image) {
-        return next(new Error('Image is required', { cause: 400 }));
+        return next(new Error('Image is required (either as a base64 string or a file)', { cause: 400 }));
     }
 
     // Call the external AI API service (or mock fallback)
