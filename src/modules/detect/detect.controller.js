@@ -3,7 +3,7 @@ import { asyncHandler } from '../../utils/errorHandling.js';
 import { analyzeImageWithAI } from '../../services/ai.service.js';
 
 export const detectObjects = asyncHandler(async (req, res, next) => {
-    let { image } = req.body;
+    let image = req.body?.image;
 
     // If a file was uploaded, convert it to base64
     if (req.file) {
